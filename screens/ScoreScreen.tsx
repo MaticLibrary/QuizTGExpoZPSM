@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { TESTS } from '../data/tests';
 import type { Result } from '../data/results';
@@ -11,12 +11,10 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'Score'>;
 export default function ScoreScreen({ route, navigation }: Props) {
   const [nick, setNick] = useState('');
   const saved = useRef(false);
+  const resultId = useRef(`${Date.now()}-${route.params.testId}`);
   const test = TESTS.find((item) => item.id === route.params.testId);
 
   async function saveResult() {
-    if (saved.current) return;
-    saved.current = true;
-
     const now = new Date();
     const date = [
       now.getFullYear(),
@@ -25,7 +23,7 @@ export default function ScoreScreen({ route, navigation }: Props) {
     ].join('-');
 
     const result: Result = {
-      id: `${Date.now()}-${route.params.testId}`,
+      id: resultId.current,
       nick: nick.trim() || 'Pseudonim',
       score: route.params.score,
       total: route.params.total,
@@ -34,8 +32,19 @@ export default function ScoreScreen({ route, navigation }: Props) {
     };
 
     const existing = await getJSON<Result[]>(RESULTS_KEY);
-    await setJSON(RESULTS_KEY, [result, ...(existing ?? [])]);
+    const results = existing ?? [];
+    const updated = results.some((item) => item.id === resultId.current)
+      ? results.map((item) => item.id === resultId.current ? result : item)
+      : [result, ...results];
+    await setJSON(RESULTS_KEY, updated);
+    saved.current = true;
   }
+
+  useEffect(() => {
+    if (!saved.current) {
+      void saveResult();
+    }
+  }, []);
 
   return (
     <View style={styles.screen}>
