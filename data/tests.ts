@@ -10,18 +10,18 @@ export const TESTS: TestSummary[] = [
     id: 'history',
     name: 'Historia',
     description: 'Rzym, Grecja i wszystko pomiędzy',
-    numberOfTasks: 20,
+    numberOfTasks: 2,
   },
   {
     id: 'geography',
     name: 'Geografia',
     description: 'Stolice, rzeki, szczyty',
-    numberOfTasks: 15,
+    numberOfTasks: 2,
   },
   {
     id: 'informatics',
     name: 'Informatyka',
     description: 'Sieci, systemy, języki',
-    numberOfTasks: 12,
+    numberOfTasks: 2,
   },
 ];

@@ -8,6 +8,7 @@ import type { DrawerNavigationProp } from '@react-navigation/drawer';
 export type HomeStackParamList = {
   Home: undefined;
   Quiz: { testId: string };
+  Score: { testId: string; score: number; total: number };
 };
 
 export type RootDrawerParamList = {
